@@ -1,0 +1,33 @@
+{
+  "type": "Topology",
+  "arcs": [
+    [[0, 41], [3, 41], [3, 43], [0, 43], [0, 41]],
+    [[1, 38], [4, 38], [4, 40], [1, 40], [1, 38]],
+    [[-1, 39], [1, 39], [1, 41], [-1, 41], [-1, 39]]
+  ],
+  "objects": {
+    "admin1": {
+      "type": "GeometryCollection",
+      "geometries": [
+        {
+          "type": "Polygon",
+          "id": "ES-CT",
+          "properties": { "id": "ES-CT", "name": "Catalonia" },
+          "arcs": [[0]]
+        },
+        {
+          "type": "Polygon",
+          "id": "ES-IB",
+          "properties": { "id": "ES-IB", "name": "Balearic Islands" },
+          "arcs": [[1]]
+        },
+        {
+          "type": "Polygon",
+          "id": "ES-VC",
+          "properties": { "id": "ES-VC", "name": "Valencia" },
+          "arcs": [[2]]
+        }
+      ]
+    }
+  }
+}

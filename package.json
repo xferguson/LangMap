@@ -1,0 +1,47 @@
+{
+  "name": "lang-map",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "prebuild": "tsx scripts/check-coverage.ts",
+    "preview": "vite preview",
+    "test": "vitest run",
+    "pretest": "tsx scripts/check-coverage.ts",
+    "test:watch": "vitest",
+    "e2e": "playwright test",
+    "e2e:install": "playwright install --with-deps chromium",
+    "build:geo": "tsx scripts/build-geo.ts",
+    "check:coverage": "tsx scripts/check-coverage.ts"
+  },
+  "dependencies": {
+    "@types/leaflet": "^1.9.21",
+    "leaflet": "^1.9.4",
+    "rc-slider": "^11.1.7",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-leaflet": "^4.2.1"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.0",
+    "@testing-library/jest-dom": "^6.6.3",
+    "@testing-library/react": "^16.1.0",
+    "@testing-library/user-event": "^14.5.2",
+    "@types/d3-geo": "^3.1.0",
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@types/topojson-client": "^3.1.5",
+    "@vitejs/plugin-react": "^4.3.4",
+    "@vitest/ui": "^2.1.8",
+    "d3-geo": "^3.1.1",
+    "jsdom": "^25.0.1",
+    "topojson-client": "^3.1.0",
+    "tsx": "^4.21.0",
+    "typescript": "^5.6.3",
+    "vite": "^5.4.11",
+    "vitest": "^2.1.8",
+    "world-atlas": "^2.0.2"
+  }
+}

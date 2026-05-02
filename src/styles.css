@@ -1,0 +1,239 @@
+:root {
+  --bg: #0e1116;
+  --fg: #e6edf3;
+  --muted: #8b949e;
+  --accent: #58a6ff;
+}
+
+* { box-sizing: border-box; }
+
+html, body, #root {
+  margin: 0;
+  height: 100%;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+}
+
+.app {
+  display: grid;
+  grid-template-columns: 360px 1fr;
+  height: 100vh;
+  width: 100vw;
+  padding: 0;
+  overflow: hidden;
+}
+
+.app > [data-testid="world-map"] {
+  height: 100vh;
+  width: 100%;
+  overflow: hidden;
+}
+
+.leaflet-container {
+  background: #f5f5f5;
+  height: 100vh;
+  width: 100%;
+}
+
+.side-panel {
+  display: grid;
+  grid-template-rows: auto 1fr auto auto;
+  grid-template-columns: 1fr;
+  gap: 16px;
+  padding: 16px;
+  height: 100vh;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.side-panel > section {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+.side-panel > [data-testid="panel-section-list"] {
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.side-panel section h2 {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin: 0 0 8px 0;
+}
+
+.language-picker-row {
+  display: flex;
+  flex-direction: row;
+  gap: 8px;
+  align-items: center;
+}
+
+.language-picker-row select,
+.language-picker-row button {
+  min-height: 28px;
+}
+
+/* Language list rows — single line with ellipsis. */
+.language-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.language-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  height: 36px;
+  padding: 0 4px;
+}
+
+.language-row-name {
+  flex: 1 1 auto;
+  min-width: 0;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-size: 14px;
+}
+
+.level-badge {
+  flex: 0 0 auto;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--fg);
+}
+
+.language-row-remove {
+  flex: 0 0 auto;
+  width: 24px;
+  height: 24px;
+  padding: 0;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 4px;
+  color: var(--fg);
+  cursor: pointer;
+  font-size: 12px;
+  line-height: 1;
+}
+
+.language-row-remove:hover {
+  background: rgba(255, 255, 255, 0.06);
+}
+
+/* Stats panel — two side-by-side cards. */
+.stats-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.stats-card {
+  padding: 10px 12px;
+  border-radius: 6px;
+  background: #161b22;
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.stats-card .stats-card-count {
+  font-size: 24px;
+  font-weight: 600;
+  line-height: 1.1;
+}
+
+.stats-card .stats-card-label {
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.stats-card .stats-card-pop {
+  font-size: 12px;
+  color: var(--fg);
+  margin-top: 2px;
+}
+
+/* Filter section — level range slider. */
+.level-range-slider {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 4px 6px 28px;
+}
+
+.level-range-readout {
+  font-size: 12px;
+  color: var(--muted);
+  letter-spacing: 0.02em;
+}
+
+.level-range-readout strong {
+  color: var(--fg);
+  font-weight: 600;
+}
+
+.level-range-slider .rc-slider {
+  padding: 0;
+  height: 28px;
+}
+
+.level-range-slider .rc-slider-rail {
+  background: rgba(255, 255, 255, 0.10);
+  height: 6px;
+  border-radius: 3px;
+}
+
+.level-range-slider .rc-slider-track {
+  background: var(--accent);
+  height: 6px;
+  border-radius: 3px;
+}
+
+.level-range-slider .rc-slider-handle {
+  width: 18px;
+  height: 18px;
+  border: 2px solid var(--accent);
+  background: var(--fg);
+  margin-top: -6px;
+  opacity: 1;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
+}
+
+.level-range-slider .rc-slider-handle:focus,
+.level-range-slider .rc-slider-handle-dragging {
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.25);
+  border-color: var(--accent);
+}
+
+.level-range-slider .rc-slider-mark-text {
+  font-size: 10px;
+  color: var(--muted);
+}
+
+.level-range-slider .rc-slider-mark-text-active {
+  color: var(--fg);
+}
+
+.level-range-slider .rc-slider-dot {
+  display: none;
+}
