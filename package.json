@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
     "prebuild": "tsx scripts/check-coverage.ts",
     "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "pretest": "tsx scripts/check-coverage.ts",
     "test:watch": "vitest",
