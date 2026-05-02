@@ -6,13 +6,24 @@ import { LanguagePicker } from "./components/LanguagePicker";
 import { LanguageList } from "./components/LanguageList";
 import { StatsPanel } from "./components/StatsPanel";
 import { LevelRangeSlider } from "./components/LevelRangeSlider";
+import { DrawerToggle } from "./components/DrawerToggle";
 
 export function App() {
   const [state, setState] = useState<AppState>(() => loadState());
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false);
 
   useEffect(() => {
     saveState(state);
   }, [state]);
+
+  useEffect(() => {
+    if (!drawerOpen) return;
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setDrawerOpen(false);
+    };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [drawerOpen]);
 
   const addLanguage = (ul: UserLanguage) => {
     setState((s) => {
@@ -31,9 +42,24 @@ export function App() {
     }));
   };
 
+  const drawerState = drawerOpen ? "open" : "closed";
+
   return (
     <main className="app">
-      <aside data-testid="side-panel" className="side-panel">
+      <aside
+        data-testid="side-panel"
+        className="side-panel"
+        data-state={drawerState}
+      >
+        <button
+          type="button"
+          className="drawer-close"
+          data-testid="drawer-close"
+          aria-label="Close menu"
+          onClick={() => setDrawerOpen(false)}
+        >
+          ×
+        </button>
         <section data-testid="panel-section-add" className="panel-section">
           <h2>Add a language</h2>
           <LanguagePicker onAdd={addLanguage} />
@@ -54,6 +80,16 @@ export function App() {
           />
         </section>
       </aside>
+      <DrawerToggle
+        open={drawerOpen}
+        onClick={() => setDrawerOpen((v) => !v)}
+      />
+      <div
+        data-testid="drawer-overlay"
+        className="drawer-overlay"
+        data-state={drawerState}
+        onClick={() => setDrawerOpen(false)}
+      />
       <WorldMap state={state} />
     </main>
   );

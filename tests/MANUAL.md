@@ -110,6 +110,23 @@ picker is now a `<select>` row, not a search-and-click flow.)
 
 The four sections appear in the listed DOM order inside `data-testid="side-panel"` and each carries an `<h2>` title ("Add a language", "Your languages", "Stats", "Filter by level").
 
+### `<App />` v1.5 mobile drawer
+
+- `drawer-toggle` — hamburger button (`☰`) that opens the drawer on mobile.
+  Always rendered; CSS hides it at desktop. Carries `aria-expanded="false"|"true"`
+  and `aria-label="Open menu"|"Close menu"` reflecting drawer state.
+- `drawer-overlay` — dim backdrop covering the map while the drawer is open
+  on mobile. Always rendered; carries `data-state="open"|"closed"`. Tapping
+  it closes the drawer.
+- `drawer-close` — `×` button rendered as the first child of `<aside>`,
+  visible only on mobile, closes the drawer when clicked.
+
+`side-panel` and `drawer-overlay` carry `data-state="open"|"closed"` reflecting
+the current drawer state. The drawer-toggle button carries
+`aria-expanded="true"|"false"`. On desktop the same DOM nodes exist but the
+drawer-toggle, drawer-close, and drawer-overlay are hidden via CSS
+(`display: none`) and the side panel sits in its v1.4 left-column position.
+
 ### `<StatsPanel />`
 
 - `stats-communicate` — Communicate (B1+) card root
@@ -301,3 +318,54 @@ viewport ≥ 1024×768.
      the inactive track and the panel background.
    - A "Showing {min} to {max}" readout (e.g. "Showing A1 to Native")
      appears above the slider and updates live as you drag a thumb.
+
+## v1.5 mobile checks
+
+Run after the v1.5 implementation lands. These need a human eye and DevTools
+device emulation. Reset state with `localStorage.clear()` between checks.
+
+1. **iPhone 14 (390×844) drawer flow.** Open DevTools, set the device to
+   "iPhone 14" (or set responsive mode to 390×844). Reload. Confirm:
+   - The map fills the entire viewport. The side panel is not visible.
+   - A hamburger button (`☰`) sits at the top-left of the map area, clear
+     of the device's notch / status bar.
+   - Tap the hamburger. The drawer slides in from the left smoothly (≤ 300
+     ms, no flicker). A dim overlay covers the map.
+   - Tap anywhere on the overlay. The drawer slides back out cleanly.
+   - Tap the hamburger again, then tap the `×` close button inside the
+     drawer. The drawer closes.
+   - Tap the hamburger again, then press the hardware/keyboard Escape. The
+     drawer closes.
+
+2. **iPad portrait (768×1024).** Set the DevTools device to "iPad" in
+   portrait orientation. Confirm the mobile drawer pattern is still active
+   (hamburger visible, side panel hidden by default, overlay covers the map
+   when open). 768 px is the upper bound of the mobile breakpoint.
+
+3. **iPad landscape (1024×768).** Rotate the iPad device to landscape.
+   Confirm the desktop layout is restored: side panel pinned on the left at
+   360 px wide, no hamburger button visible, no overlay, map fills the
+   remaining space to the right.
+
+4. **Notched device clearance (iPhone 14 Pro).** Set the DevTools device to
+   "iPhone 14 Pro" (or any profile with a notch + home indicator). Confirm:
+   - The hamburger toggle clears the notch — the button does not sit under
+     the status bar / camera cutout.
+   - The Leaflet attribution control "© OpenStreetMap contributors © CARTO"
+     remains visible at the bottom-right of the map and is not clipped or
+     overlapped by the home indicator safe area.
+
+5. **Touch target spot check (any mobile viewport).** Open the drawer.
+   Eyeball + measure (DevTools "Inspect" reports the box):
+   - Slider thumbs (`level-range-thumb-min`, `level-range-thumb-max`) are
+     ≥ 24×24 px.
+   - Per-language-row remove buttons (`language-row-remove-<id>`) are
+     ≥ 32×32 px.
+   - Language `<select>`, level `<select>`, and **Add** button are each
+     ≥ 36 px tall.
+
+6. **Drawer contents parity (v1.5-5).** With the drawer open on mobile,
+   confirm the same four sections appear in the same DOM order as the
+   desktop side panel: "Add a language", "Your languages", "Stats", "Filter
+   by level". All controls inside (picker, list, stats cards, filter
+   slider) work exactly as on desktop.

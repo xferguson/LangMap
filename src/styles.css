@@ -9,7 +9,7 @@
 
 html, body, #root {
   margin: 0;
-  height: 100%;
+  height: 100dvh;
   overflow: hidden;
   background: var(--bg);
   color: var(--fg);
@@ -19,22 +19,23 @@ html, body, #root {
 .app {
   display: grid;
   grid-template-columns: 360px 1fr;
-  height: 100vh;
+  height: 100dvh;
   width: 100vw;
   padding: 0;
   overflow: hidden;
 }
 
 .app > [data-testid="world-map"] {
-  height: 100vh;
+  height: 100dvh;
   width: 100%;
   overflow: hidden;
 }
 
 .leaflet-container {
   background: #f5f5f5;
-  height: 100vh;
+  height: 100dvh;
   width: 100%;
+  padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
 .side-panel {
@@ -43,7 +44,7 @@ html, body, #root {
   grid-template-columns: 1fr;
   gap: 16px;
   padding: 16px;
-  height: 100vh;
+  height: 100dvh;
   min-height: 0;
   overflow: hidden;
   background: var(--bg);
@@ -78,7 +79,7 @@ html, body, #root {
 
 .language-picker-row select,
 .language-picker-row button {
-  min-height: 28px;
+  min-height: 36px;
 }
 
 /* Language list rows — single line with ellipsis. */
@@ -121,8 +122,8 @@ html, body, #root {
 
 .language-row-remove {
   flex: 0 0 auto;
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   padding: 0;
   display: inline-flex;
   align-items: center;
@@ -210,11 +211,11 @@ html, body, #root {
 }
 
 .level-range-slider .rc-slider-handle {
-  width: 18px;
-  height: 18px;
+  width: 24px;
+  height: 24px;
   border: 2px solid var(--accent);
   background: var(--fg);
-  margin-top: -6px;
+  margin-top: -9px;
   opacity: 1;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.4);
 }
@@ -236,4 +237,96 @@ html, body, #root {
 
 .level-range-slider .rc-slider-dot {
   display: none;
+}
+
+/* Drawer toggle / close / overlay — hidden at desktop, shown on mobile. */
+.drawer-toggle,
+.drawer-close,
+.drawer-overlay {
+  display: none;
+}
+
+.drawer-toggle {
+  position: absolute;
+  top: calc(12px + env(safe-area-inset-top, 0px));
+  left: 12px;
+  width: 40px;
+  height: 40px;
+  z-index: 1020;
+  background: var(--bg);
+  color: var(--fg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  font-size: 20px;
+  cursor: pointer;
+  padding: 0;
+}
+
+.drawer-close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 40px;
+  height: 40px;
+  background: transparent;
+  color: var(--fg);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 6px;
+  font-size: 24px;
+  line-height: 1;
+  cursor: pointer;
+  padding: 0;
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  z-index: 1000;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 200ms linear;
+}
+
+.drawer-overlay[data-state="open"] {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+@media (max-width: 768px) {
+  .app {
+    grid-template-columns: 1fr;
+  }
+
+  .side-panel {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100dvh;
+    width: min(85vw, 360px);
+    transform: translateX(-100%);
+    transition: transform 240ms cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 1010;
+  }
+
+  .side-panel[data-state="open"] {
+    transform: translateX(0);
+  }
+
+  .drawer-toggle {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .drawer-close {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .drawer-overlay {
+    display: block;
+    left: min(85vw, 360px);
+  }
 }

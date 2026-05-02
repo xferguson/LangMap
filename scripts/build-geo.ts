@@ -75,6 +75,82 @@ function lonSpanOf(ring: Position[]): number {
   return max - min;
 }
 
+// Linear interpolation: latitude where the short-path edge a→b crosses
+// the antimeridian. a and b are on opposite hemispheres.
+function latAtAntimeridian(a: Position, b: Position): number {
+  const [aLon, aLat] = a;
+  const [bLon, bLat] = b;
+  // Shift b so the edge a→b is monotonic in lon (no wraparound).
+  // If a is east (>0), b's "shifted" representation is bLon + 360.
+  // If a is west (<0), b's "shifted" representation is bLon - 360.
+  const bShifted = aLon > 0 ? bLon + 360 : bLon - 360;
+  const target = aLon > 0 ? 180 : -180;
+  const t = (target - aLon) / (bShifted - aLon);
+  return aLat + t * (bLat - aLat);
+}
+
+// Split a closed ring at every antimeridian crossing into one or more
+// closed sub-rings, each entirely within one hemisphere.
+// Adds (±180, lat) closure points along the antimeridian.
+function splitRingAtAntimeridian(ring: Position[]): Position[][] {
+  if (ring.length < 2) return [ring];
+
+  const segments: Position[][] = [[ring[0]]];
+  let crossed = false;
+
+  for (let i = 1; i < ring.length; i++) {
+    const prev = ring[i - 1];
+    const curr = ring[i];
+    if (Math.abs(curr[0] - prev[0]) > 180) {
+      crossed = true;
+      const lat = latAtAntimeridian(prev, curr);
+      const prevSide = prev[0] > 0 ? 180 : -180;
+      const currSide = curr[0] > 0 ? 180 : -180;
+      segments[segments.length - 1].push([prevSide, lat]);
+      segments.push([[currSide, lat]]);
+    }
+    segments[segments.length - 1].push(curr);
+  }
+
+  if (!crossed) return [ring];
+
+  // The first and last segments belong to the same hemisphere (the ring is
+  // closed and starts/ends on the same point). Stitch them.
+  if (segments.length > 1) {
+    const first = segments.shift() as Position[];
+    const last = segments.pop() as Position[];
+    segments.unshift([...last, ...first]);
+  }
+
+  // Close each ring (first === last). The closing edge runs along the
+  // antimeridian, which is the desired behaviour — the polygon's eastern (or
+  // western) boundary visually sits exactly at ±180°.
+  return segments.map((s) => {
+    if (s.length === 0) return s;
+    const a = s[0];
+    const b = s[s.length - 1];
+    if (a[0] !== b[0] || a[1] !== b[1]) {
+      s.push([a[0], a[1]]);
+    }
+    return s;
+  });
+}
+
+// Split every ring (outer + holes) of a polygon. Inner rings (holes) that
+// don't cross the antimeridian pass through unchanged. Inner rings that
+// do cross are split into separate polygons (we don't try to associate
+// split holes back with the right outer ring — Russia's mainland has no
+// holes that cross the antimeridian, so this is a no-op for the data we
+// ship). Each output polygon has a single outer ring.
+function splitPolygonAtAntimeridian(poly: Position[][]): Position[][][] {
+  const outer = poly[0];
+  if (lonSpanOf(outer) <= 180) {
+    return [poly];
+  }
+  const splitOuters = splitRingAtAntimeridian(outer);
+  return splitOuters.map((r) => [r]);
+}
+
 function main(): void {
   const __filename = fileURLToPath(import.meta.url);
   const __dirname = dirname(__filename);
@@ -107,21 +183,22 @@ function main(): void {
     const props = (f.properties ?? {}) as Record<string, unknown>;
     const geom = f.geometry;
     let outGeom = geom;
-    if (iso === "RU" && geom && geom.type === "MultiPolygon") {
+    if (geom && geom.type === "MultiPolygon") {
       const mp = geom as MultiPolygon;
-      const filtered: Position[][][] = [];
+      const splitPolys: Position[][][] = [];
       for (const poly of mp.coordinates) {
-        const outer = poly[0];
-        if (outer && lonSpanOf(outer as Position[]) <= 180) {
-          filtered.push(poly);
+        for (const split of splitPolygonAtAntimeridian(poly as Position[][])) {
+          splitPolys.push(split);
         }
       }
-      outGeom = { type: "MultiPolygon", coordinates: filtered };
-    } else if (iso === "RU" && geom && geom.type === "Polygon") {
+      outGeom = { type: "MultiPolygon", coordinates: splitPolys };
+    } else if (geom && geom.type === "Polygon") {
       const pg = geom as Polygon;
-      const outer = pg.coordinates[0];
-      if (outer && lonSpanOf(outer as Position[]) > 180) {
-        continue;
+      const split = splitPolygonAtAntimeridian(pg.coordinates as Position[][]);
+      if (split.length === 1) {
+        outGeom = { type: "Polygon", coordinates: split[0] };
+      } else {
+        outGeom = { type: "MultiPolygon", coordinates: split };
       }
     }
     out.features.push({

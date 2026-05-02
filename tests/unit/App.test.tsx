@@ -152,6 +152,132 @@ describe("<App /> v1.3-6 — side panel sections", () => {
   });
 });
 
+describe("<App /> v1.5 drawer behavior", () => {
+  beforeEach(() => {
+    localStorage.clear();
+  });
+
+  it("v1.5-2 — drawer-toggle exists in the DOM regardless of viewport", () => {
+    render(<App />);
+    expect(screen.getByTestId("drawer-toggle")).toBeInTheDocument();
+  });
+
+  it("v1.5-4 — drawer-overlay exists in the DOM with initial data-state=\"closed\"", () => {
+    render(<App />);
+    const overlay = screen.getByTestId("drawer-overlay");
+    expect(overlay).toBeInTheDocument();
+    expect(overlay).toHaveAttribute("data-state", "closed");
+  });
+
+  it("v1.5-1 — side-panel has initial data-state=\"closed\"", () => {
+    render(<App />);
+    const panel = screen.getByTestId("side-panel");
+    expect(panel).toHaveAttribute("data-state", "closed");
+  });
+
+  it("v1.5-3 — toggle has aria-expanded=\"false\" initially and aria-label=\"Open menu\"", () => {
+    render(<App />);
+    const toggle = screen.getByTestId("drawer-toggle");
+    expect(toggle).toHaveAttribute("aria-expanded", "false");
+    expect(toggle).toHaveAttribute("aria-label", "Open menu");
+  });
+
+  it("v1.5-3 — clicking drawer-toggle flips data-state to \"open\" on side-panel and overlay, and aria-expanded to \"true\"", async () => {
+    render(<App />);
+    const user = userEvent.setup();
+    const toggle = screen.getByTestId("drawer-toggle");
+    const panel = screen.getByTestId("side-panel");
+    const overlay = screen.getByTestId("drawer-overlay");
+
+    await user.click(toggle);
+
+    expect(panel).toHaveAttribute("data-state", "open");
+    expect(overlay).toHaveAttribute("data-state", "open");
+    expect(toggle).toHaveAttribute("aria-expanded", "true");
+  });
+
+  it("v1.5-4 — clicking drawer-overlay (when open) flips data-state back to \"closed\"", async () => {
+    render(<App />);
+    const user = userEvent.setup();
+    const toggle = screen.getByTestId("drawer-toggle");
+    const panel = screen.getByTestId("side-panel");
+    const overlay = screen.getByTestId("drawer-overlay");
+
+    await user.click(toggle);
+    expect(panel).toHaveAttribute("data-state", "open");
+    expect(overlay).toHaveAttribute("data-state", "open");
+
+    await user.click(overlay);
+    expect(panel).toHaveAttribute("data-state", "closed");
+    expect(overlay).toHaveAttribute("data-state", "closed");
+  });
+
+  it("v1.5-4 — clicking drawer-close (when open) flips data-state back to \"closed\"", async () => {
+    render(<App />);
+    const user = userEvent.setup();
+    const toggle = screen.getByTestId("drawer-toggle");
+    const panel = screen.getByTestId("side-panel");
+    const overlay = screen.getByTestId("drawer-overlay");
+
+    await user.click(toggle);
+    expect(panel).toHaveAttribute("data-state", "open");
+
+    const close = screen.getByTestId("drawer-close");
+    await user.click(close);
+    expect(panel).toHaveAttribute("data-state", "closed");
+    expect(overlay).toHaveAttribute("data-state", "closed");
+  });
+
+  it("v1.5-4 — pressing Escape (when open) flips data-state back to \"closed\"", async () => {
+    render(<App />);
+    const user = userEvent.setup();
+    const toggle = screen.getByTestId("drawer-toggle");
+    const panel = screen.getByTestId("side-panel");
+    const overlay = screen.getByTestId("drawer-overlay");
+
+    await user.click(toggle);
+    expect(panel).toHaveAttribute("data-state", "open");
+
+    await user.keyboard("{Escape}");
+    expect(panel).toHaveAttribute("data-state", "closed");
+    expect(overlay).toHaveAttribute("data-state", "closed");
+  });
+
+  it("v1.5-5 — the four panel-section testids remain children of side-panel regardless of drawer state (display flip, not unmount)", async () => {
+    render(<App />);
+    const user = userEvent.setup();
+    const toggle = screen.getByTestId("drawer-toggle");
+    const panel = screen.getByTestId("side-panel");
+
+    // Closed: sections are present.
+    expect(within(panel).getByTestId("panel-section-add")).toBeInTheDocument();
+    expect(within(panel).getByTestId("panel-section-list")).toBeInTheDocument();
+    expect(within(panel).getByTestId("panel-section-stats")).toBeInTheDocument();
+    expect(within(panel).getByTestId("panel-section-filter")).toBeInTheDocument();
+
+    // Open the drawer.
+    await user.click(toggle);
+    expect(panel).toHaveAttribute("data-state", "open");
+
+    // Open: same sections are still children of the same panel node (no unmount).
+    expect(within(panel).getByTestId("panel-section-add")).toBeInTheDocument();
+    expect(within(panel).getByTestId("panel-section-list")).toBeInTheDocument();
+    expect(within(panel).getByTestId("panel-section-stats")).toBeInTheDocument();
+    expect(within(panel).getByTestId("panel-section-filter")).toBeInTheDocument();
+
+    // Close the drawer again.
+    const close = screen.getByTestId("drawer-close");
+    await user.click(close);
+    expect(panel).toHaveAttribute("data-state", "closed");
+
+    // Closed again: still mounted.
+    expect(within(panel).getByTestId("panel-section-add")).toBeInTheDocument();
+    expect(within(panel).getByTestId("panel-section-list")).toBeInTheDocument();
+    expect(within(panel).getByTestId("panel-section-stats")).toBeInTheDocument();
+    expect(within(panel).getByTestId("panel-section-filter")).toBeInTheDocument();
+  });
+});
+
 describe("<App /> duplicate-language guard (AC 16 / v1.1-6)", () => {
   beforeEach(() => {
     localStorage.clear();

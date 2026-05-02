@@ -209,3 +209,49 @@ A regression-fix increment that restores the v1.2 map quality (transparent count
 - No new map interactions (hover popups, click-to-toggle, etc.).
 - No re-projection or change of tile provider.
 - No expansion past 139 languages — that backlog item still rolls forward.
+
+---
+
+## v1.5 — Mobile-friendly layout + touch-target sizing (2026-05-02)
+
+### Goal
+
+A responsive layout increment that makes the app usable on phones and small tablets. At viewports ≤ 768 px the side panel becomes a slide-in drawer toggled by a hamburger button, the map fills the viewport, and touch targets across the app (slider thumbs, remove buttons, selects, primary buttons) bump up to thumb-friendly sizes at every viewport. The desktop layout (≥ 769 px) is functionally unchanged from v1.4.
+
+### User-visible behavior changes
+
+1. On viewports ≤ 768 px wide, the page opens with the map filling the screen and the side panel hidden. A hamburger button at the top-left of the map area toggles a drawer that slides in from the left containing the same four sections as the desktop side panel.
+2. While the drawer is open on mobile, a dim overlay covers the map and tapping the overlay (or pressing Escape) closes the drawer.
+3. At viewports ≥ 769 px, the layout is identical to v1.4 — panel on the left, map on the right, no hamburger button, no overlay.
+4. Touch targets are larger across the entire app at every viewport: the level-range slider thumbs, the per-language-row remove control, the language and level `<select>` dropdowns, and the **Add** button are all easier to tap with a thumb than in v1.4.
+5. On notched mobile devices the Leaflet attribution control remains visible and clears the device's home-indicator safe area; the app shell uses `100dvh` so iOS Safari's collapsing URL bar does not leave the user with a clipped layout.
+
+### Acceptance criteria
+
+1. **v1.5-1 — Mobile layout hides the panel and fills the map.** Given a viewport ≤ 768 px wide, when the page first loads, then the side panel is hidden by default (not visible to the user) and the map area fills the full viewport width and full visible height.
+
+2. **v1.5-2 — Drawer toggle visibility is breakpoint-driven.** Given the page is rendered, when the viewport width is ≤ 768 px, then an element with `data-testid="drawer-toggle"` is visible in the top-left of the map area; when the viewport width is ≥ 769 px, then that same element is either absent from the rendered DOM or has computed `display: none` so the user does not see it.
+
+3. **v1.5-3 — Tapping the toggle opens the drawer with a transition.** Given a viewport ≤ 768 px and the drawer is closed, when the user taps the element with `data-testid="drawer-toggle"`, then the side panel slides in from the left via a CSS transition whose total duration is ≤ 300 ms and the drawer reaches its open state at the end of that transition.
+
+4. **v1.5-4 — Overlay covers the map and dismisses the drawer.** Given a viewport ≤ 768 px and the drawer is open, when the rendered DOM is inspected, then an element with `data-testid="drawer-overlay"` covers the visible map area; when the user taps that overlay, then the drawer closes.
+
+5. **v1.5-5 — Drawer contents match desktop sections and order.** Given a viewport ≤ 768 px and the drawer is open, when its contents are inspected, then it contains exactly the same four sections as the desktop side panel — `panel-section-add`, `panel-section-list`, `panel-section-stats`, `panel-section-filter` — in that order, with no functional differences from the desktop panel (same controls, same behavior, same data-testids).
+
+6. **v1.5-6 — Desktop layout is unchanged from v1.4.** Given a viewport ≥ 769 px, when the layout renders, then no `drawer-toggle` and no `drawer-overlay` are visible to the user, the side panel sits at the left edge with its v1.2 360 px width, the map fills the rest of the horizontal space to its right, and the rendered layout matches v1.4 byte-for-byte.
+
+7. **v1.5-7 — Touch targets meet minimum sizes at every viewport.** Given the page is rendered at any viewport, when controls are inspected, then the level-range slider thumbs are ≥ 24×24 px, the per-language-row remove button is ≥ 32×32 px, and the language `<select>`, level `<select>`, and **Add** button are each ≥ 36 px tall.
+
+8. **v1.5-8 — Leaflet attribution is visible and clears safe-area on mobile.** Given a viewport ≤ 768 px on a notched-device profile (e.g. iPhone 14 Pro in DevTools), when the map renders, then the Leaflet attribution control "© OpenStreetMap contributors © CARTO" is visible and is not clipped, hidden, or overlapped by the device's home-indicator safe area.
+
+9. **v1.5-9 — All prior ACs continue to hold at desktop test viewport.** Given the v1.5 build is deployed and tests run at the existing desktop viewport of 1280×800, when each acceptance criterion from v1, v1.1, v1.2, v1.3, and v1.4 is exercised, then it passes with the same observable outcome it had in v1.4.
+
+### Non-goals (v1.5)
+
+- No bottom-sheet pattern — the user explicitly chose the drawer-from-left pattern; a bottom-sheet variant is not in scope.
+- No full ARIA dialog focus management — v1.5 uses a minimal focus trap (focus the close control on open, restore on close) only; complete `role="dialog"` modal semantics, focus cycling, and inert-background handling are deferred.
+- No persistence of drawer-open state across reloads — the drawer always defaults to closed when the page loads on mobile.
+- No reorientation of the language list to a horizontal chip strip on mobile — the list remains a vertical column inside the drawer with the same row layout as desktop.
+- No changes to the dataset, opacity ramp, stats math, persistence schema, or sub-national semantics — those remain as specified in v1 through v1.4.
+- No theming controls or dark/light toggle.
+- No new map interactions on mobile (e.g. tap-and-hold popups, long-press to add language).
