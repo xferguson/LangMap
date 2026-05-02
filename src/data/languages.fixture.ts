@@ -6,21 +6,21 @@ export const LANGUAGES_FIXTURE: Language[] = [
     name: "Spanish",
     endonym: "Español",
     speakers: { l1: 486_000_000, l2: 75_000_000 },
-    regions: ["ES", "MX", "AR", "CO", "PE", "VE", "CL", "EC", "GT", "CU", "BO", "DO", "HN", "PY", "SV", "NI", "CR", "PR", "UY", "GQ"],
+    regions: ["ES", "MX", "AR", "CO", "PE", "VE", "CL", "EC", "GT", "CU", "BO", "DO", "HN", "PY", "SV", "NI", "CR", "PA", "PR", "UY", "GQ"],
   },
   {
     id: "eng",
     name: "English",
     endonym: "English",
     speakers: { l1: 380_000_000, l2: 1_077_000_000 },
-    regions: ["US", "GB", "CA", "AU", "NZ", "IE", "ZA", "IN", "PK", "NG", "PH", "SG", "JM", "KE"],
+    regions: ["US", "GB", "CA", "AU", "NZ", "IE", "ZA", "IN", "PK", "NG", "PH", "SG", "JM", "KE", "BS", "BB", "BZ", "BW", "DM", "SZ", "GM", "GH", "GD", "GY", "LS", "LR", "MW", "MT", "MU", "FM", "NA", "PG", "RW", "KN", "LC", "VC", "WS", "SC", "SL", "SB", "SS", "TZ", "TO", "TT", "UG", "VU", "ZM", "ZW", "MY", "LK", "IM", "JE", "GG"],
   },
   {
     id: "fra",
     name: "French",
     endonym: "Français",
     speakers: { l1: 81_000_000, l2: 229_000_000 },
-    regions: ["FR", "CA", "BE", "CH", "LU", "MC", "SN", "CI", "CD", "CM", "MG", "HT"],
+    regions: ["FR", "CA", "BE", "CH", "LU", "MC", "SN", "CI", "CD", "CM", "MG", "HT", "BJ", "BF", "BI", "KM", "DJ", "GA", "GN", "ML", "NE", "CG", "RW", "TD", "TG", "VU", "SC"],
   },
   {
     id: "cat",
@@ -41,7 +41,7 @@ export const LANGUAGES_FIXTURE: Language[] = [
     name: "Portuguese",
     endonym: "Português",
     speakers: { l1: 232_000_000, l2: 25_000_000 },
-    regions: ["PT", "BR", "AO", "MZ", "CV", "GW", "ST", "TL"],
+    regions: ["PT", "BR", "AO", "MZ", "CV", "GW", "ST", "TL", "MO"],
   },
   {
     id: "ita",
@@ -62,7 +62,7 @@ export const LANGUAGES_FIXTURE: Language[] = [
     name: "Arabic",
     endonym: "العربية",
     speakers: { l1: 313_000_000, l2: 274_000_000 },
-    regions: ["EG", "SA", "DZ", "MA", "IQ", "SD", "SY", "TN", "JO", "LY", "LB", "PS", "OM", "KW", "AE", "QA", "BH", "YE", "IL"],
+    regions: ["EG", "SA", "DZ", "MA", "IQ", "SD", "SY", "TN", "JO", "LY", "LB", "PS", "OM", "KW", "AE", "QA", "BH", "YE", "IL", "SO", "MR", "DJ", "KM", "TD", "EH"],
   },
   {
     id: "jpn",

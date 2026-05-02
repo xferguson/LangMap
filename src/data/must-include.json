@@ -59,5 +59,20 @@
   { "countryIso": "HU", "languageId": "hun", "languageName": "Hungarian" },
   { "countryIso": "CZ", "languageId": "ces", "languageName": "Czech" },
   { "countryIso": "RO", "languageId": "ron", "languageName": "Romanian" },
-  { "countryIso": "BG", "languageId": "bul", "languageName": "Bulgarian" }
+  { "countryIso": "BG", "languageId": "bul", "languageName": "Bulgarian" },
+  { "countryIso": "PA", "languageId": "spa", "languageName": "Spanish" },
+  { "countryIso": "BZ", "languageId": "eng", "languageName": "English" },
+  { "countryIso": "BS", "languageId": "eng", "languageName": "English" },
+  { "countryIso": "BB", "languageId": "eng", "languageName": "English" },
+  { "countryIso": "GH", "languageId": "eng", "languageName": "English" },
+  { "countryIso": "MT", "languageId": "eng", "languageName": "English" },
+  { "countryIso": "MY", "languageId": "eng", "languageName": "English" },
+  { "countryIso": "TZ", "languageId": "eng", "languageName": "English" },
+  { "countryIso": "UG", "languageId": "eng", "languageName": "English" },
+  { "countryIso": "ZM", "languageId": "eng", "languageName": "English" },
+  { "countryIso": "ZW", "languageId": "eng", "languageName": "English" },
+  { "countryIso": "ML", "languageId": "fra", "languageName": "French" },
+  { "countryIso": "NE", "languageId": "fra", "languageName": "French" },
+  { "countryIso": "TD", "languageId": "fra", "languageName": "French" },
+  { "countryIso": "BF", "languageId": "fra", "languageName": "French" }
 ]
